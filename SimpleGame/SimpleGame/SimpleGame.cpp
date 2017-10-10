@@ -13,15 +13,34 @@ but WITHOUT ANY WARRANTY.
 #include "Dependencies\glew.h"
 #include "Dependencies\freeglut.h"
 
+#include "Renderer.h"
+#include "Object.h"
+
+Renderer *g_Renderer = NULL;
+
+ObjectCC *call = NULL;
+
+GLvoid Reshape(int w, int h);
+
 void RenderScene(void)
 {
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+
+	// Renderer Test
+	//g_Renderer->DrawSolidRect(0, 0, 0, 200, 1, 0, 1, 1);
+	call->DrawSolidRect(200,200, 0, 250, 1, 0, 1, 1);
 
 	glutSwapBuffers();
 }
 
 void Idle(void)
+{
+	RenderScene();
+}
+
+void MouseInput(int button, int state, int x, int y)
 {
 	RenderScene();
 }
@@ -38,10 +57,11 @@ void SpecialKeyInput(int key, int x, int y)
 
 int main(int argc, char **argv)
 {
+	// Initialize GL things
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(0, 0);//optional
-	glutInitWindowSize(500, 500); //optional
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(500, 500);
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
@@ -54,13 +74,30 @@ int main(int argc, char **argv)
 		std::cout << "GLEW 3.0 not supported\n ";
 	}
 
+	// Initialize Renderer
+	/*g_Renderer = new Renderer(500, 500);
+	if (!g_Renderer->IsInitialized())
+	{
+		std::cout << "Renderer could not be initialized.. \n";
+	}*/
+
 	glutDisplayFunc(RenderScene);
+
 	glutIdleFunc(Idle);
-	glutKeyboardFunc(KeyInput);
-	glutSpecialFunc(SpecialKeyInput);
+	glutReshapeFunc(Reshape);
+	/*glutKeyboardFunc(KeyInput);
+	glutMouseFunc(MouseInput);
+	glutSpecialFunc(SpecialKeyInput);*/
 
 	glutMainLoop();
+
+	//delete g_Renderer;
 
     return 0;
 }
 
+GLvoid Reshape(int w, int h)
+{
+	glViewport(0, 0, w, h);
+	glOrtho(0.0, 500.0, 500.0, 0.0, -1.0, 1.0);
+}

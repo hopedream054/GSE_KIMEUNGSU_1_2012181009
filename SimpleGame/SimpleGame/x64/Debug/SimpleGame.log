@@ -1,3 +1,6 @@
 ﻿  SimpleGame.cpp
-  SimpleGame.vcxproj -> C:\Users\Kim Eung Su\Desktop\SimpleGame (1)\x64\Debug\SimpleGame.exe
-  SimpleGame.vcxproj -> C:\Users\Kim Eung Su\Desktop\SimpleGame (1)\x64\Debug\SimpleGame.pdb (Partial PDB)
+d:\3학년 2학기\게임소프트웨어공학\gse_kimeungsu_1_2012181009\gse_kimeungsu_1_2012181009\simplegame\simplegame\simplegame.cpp(44): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Object.cpp
+  코드를 생성하고 있습니다...
+  SimpleGame.vcxproj -> D:\3학년 2학기\게임소프트웨어공학\GSE_KIMEUNGSU_1_2012181009\GSE_KIMEUNGSU_1_2012181009\SimpleGame\x64\Debug\SimpleGame.exe
+  SimpleGame.vcxproj -> D:\3학년 2학기\게임소프트웨어공학\GSE_KIMEUNGSU_1_2012181009\GSE_KIMEUNGSU_1_2012181009\SimpleGame\x64\Debug\SimpleGame.pdb (Partial PDB)

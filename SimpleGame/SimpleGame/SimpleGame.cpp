@@ -18,7 +18,7 @@ but WITHOUT ANY WARRANTY.
 
 Renderer *g_Renderer = NULL;
 
-ObjectCC *call = NULL;
+ObjectCC call;
 
 GLvoid Reshape(int w, int h);
 void Timerfunction(int value);
@@ -28,13 +28,10 @@ void RenderScene(void)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
-
-	// Renderer Test
-	//g_Renderer->DrawSolidRect(0, 0, 0, 200, 1, 0, 1, 1);
-	call->Update();
+	call.DrawSence();
 	glutSwapBuffers();
 }
-
+void Update();
 void Idle(void)
 {
 	RenderScene();
@@ -42,7 +39,12 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
+	if (button == GLUT_LEFT_BUTTON)
+	{
+		call.Set_xy(x, y);
+	}
 	RenderScene();
+	
 }
 
 void KeyInput(unsigned char key, int x, int y)
@@ -74,22 +76,12 @@ int main(int argc, char **argv)
 		std::cout << "GLEW 3.0 not supported\n ";
 	}
 
-	// Initialize Renderer
-	/*g_Renderer = new Renderer(500, 500);
-	if (!g_Renderer->IsInitialized())
-	{
-		std::cout << "Renderer could not be initialized.. \n";
-	}*/
-
-
-	glutTimerFunc(100, Timerfunction, 1);
-
+	
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
 	glutReshapeFunc(Reshape);
-	/*glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
-	glutSpecialFunc(SpecialKeyInput);*/
+	glutTimerFunc(30, Timerfunction, 1);
 	glutMainLoop();
 	//delete g_Renderer;
 
@@ -104,6 +96,12 @@ GLvoid Reshape(int w, int h)
 
 void Timerfunction(int value)
 {
+	Update();
 	glutPostRedisplay(); // 화면 재 출력
-	glutTimerFunc(100, Timerfunction, 1); // 타이머함수 재 설정
+	glutTimerFunc(30, Timerfunction, 1); // 타이머함수 재 설정
+}
+
+void Update()
+{
+	call.Update();
 }

@@ -25,3 +25,8 @@ void ObjectCC::DrawSolidRect(float x, float y, float z, float size, float r, flo
 	glVertex3f(x , y+size,z);
 	glEnd();
 }
+
+void ObjectCC::Update()
+{
+	DrawSolidRect(200, 200, 0, 250, 1, 0, 1, 1);
+}

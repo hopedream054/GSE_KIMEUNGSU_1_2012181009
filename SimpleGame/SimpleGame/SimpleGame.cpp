@@ -21,6 +21,7 @@ Renderer *g_Renderer = NULL;
 ObjectCC *call = NULL;
 
 GLvoid Reshape(int w, int h);
+void Timerfunction(int value);
 
 void RenderScene(void)
 {
@@ -30,8 +31,7 @@ void RenderScene(void)
 
 	// Renderer Test
 	//g_Renderer->DrawSolidRect(0, 0, 0, 200, 1, 0, 1, 1);
-	call->DrawSolidRect(200,200, 0, 250, 1, 0, 1, 1);
-
+	call->Update();
 	glutSwapBuffers();
 }
 
@@ -81,16 +81,16 @@ int main(int argc, char **argv)
 		std::cout << "Renderer could not be initialized.. \n";
 	}*/
 
-	glutDisplayFunc(RenderScene);
 
+	glutTimerFunc(100, Timerfunction, 1);
+
+	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
 	glutReshapeFunc(Reshape);
 	/*glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);*/
-
 	glutMainLoop();
-
 	//delete g_Renderer;
 
     return 0;
@@ -100,4 +100,10 @@ GLvoid Reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
 	glOrtho(0.0, 500.0, 500.0, 0.0, -1.0, 1.0);
+}
+
+void Timerfunction(int value)
+{
+	glutPostRedisplay(); // 화면 재 출력
+	glutTimerFunc(100, Timerfunction, 1); // 타이머함수 재 설정
 }

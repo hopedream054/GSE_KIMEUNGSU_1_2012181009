@@ -71,6 +71,7 @@ void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum S
 	// ShaderObj 가 성공적으로 컴파일 되었는지 확인
 	glGetShaderiv(ShaderObj, GL_COMPILE_STATUS, &success);
 	if (!success) {
+		
 		GLchar InfoLog[1024];
 
 		//OpenGL 의 shader log 데이터를 가져옴

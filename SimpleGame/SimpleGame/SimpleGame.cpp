@@ -14,11 +14,11 @@ but WITHOUT ANY WARRANTY.
 #include "Dependencies\freeglut.h"
 
 #include "Renderer.h"
-#include "Object.h"
+#include "SceneMgr.h"
 
 Renderer *g_Renderer = NULL;
 
-ObjectCC call;
+SceneMgr SceMgr;
 
 GLvoid Reshape(int w, int h);
 void Timerfunction(int value);
@@ -28,7 +28,7 @@ void RenderScene(void)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
-	call.DrawSence();
+	SceMgr.DrawObject();
 	glutSwapBuffers();
 }
 void Update();
@@ -41,7 +41,7 @@ void MouseInput(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 	{
-		call.Set_xy(x, y);
+		SceMgr.MouseSet(x,y);
 	}
 	RenderScene();
 	
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(800, 800);
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 GLvoid Reshape(int w, int h)
 {
 	glViewport(0, 0, w, h);
-	glOrtho(0.0, 500.0, 500.0, 0.0, -1.0, 1.0);
+	glOrtho(0.0, 800.0, 800.0, 0.0, -1.0, 1.0);
 }
 
 void Timerfunction(int value)
@@ -103,5 +103,5 @@ void Timerfunction(int value)
 
 void Update()
 {
-	call.Update();
+	SceMgr.Update();
 }

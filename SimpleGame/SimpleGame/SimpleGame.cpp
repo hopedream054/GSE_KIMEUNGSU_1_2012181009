@@ -18,7 +18,7 @@ but WITHOUT ANY WARRANTY.
 
 Renderer *g_Renderer = NULL;
 
-SceneMgr SceMgr;
+SceneMgr *SceMgr=NULL;
 
 GLvoid Reshape(int w, int h);
 void Timerfunction(int value);
@@ -28,7 +28,7 @@ void RenderScene(void)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
-	SceMgr.DrawObject();
+	SceMgr->DrawObject();
 	glutSwapBuffers();
 }
 void Update();
@@ -41,7 +41,7 @@ void MouseInput(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 	{
-		SceMgr.MouseSet(x,y);
+		SceMgr->MouseSet(x,y);
 	}
 	RenderScene();
 	
@@ -60,6 +60,7 @@ void SpecialKeyInput(int key, int x, int y)
 int main(int argc, char **argv)
 {
 	// Initialize GL things
+	SceMgr = new SceneMgr;
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
@@ -103,5 +104,5 @@ void Timerfunction(int value)
 
 void Update()
 {
-	SceMgr.Update();
+	SceMgr->Update();
 }

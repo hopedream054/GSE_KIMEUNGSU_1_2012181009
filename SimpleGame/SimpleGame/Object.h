@@ -16,7 +16,7 @@ private:
 	float object_size;
 	float direction_x, direction_y;
 	float object_R, object_G, object_B;
-	float lifeTime;
+	float lifeTime,life;
 public:
 	ObjectCC();
 	ObjectCC(float x, float y, float size, float speed);
@@ -30,5 +30,6 @@ public:
 	float GetY();
 	float GetSize();
 	float GetLifeTime();
+	float GetLife();
 };
 

@@ -13,6 +13,7 @@ private:
 	ObjectCC *object[MaxObject];
 	int now;
 	float prevTime;
+	float mouseTime;
 
 public:
 	SceneMgr();
@@ -22,5 +23,7 @@ public:
 	void MouseSet(int x, int y);
 	void CollisionTest();
 	bool Collision(float ix, float iy, float isize, float jx, float jy, float jsize);
+	void ObjectTimeover();
+	void ObjectLifeover();
 };
 

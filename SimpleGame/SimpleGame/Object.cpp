@@ -13,6 +13,7 @@ ObjectCC::ObjectCC()
 	direction_y = 1;
 	object_R = 1;  object_G = 1; object_B = 1;
 	lifeTime = 5.0;
+	life = 5.0;
 };
 ObjectCC::ObjectCC(float x, float y, float size, float speed)
 {
@@ -20,8 +21,11 @@ ObjectCC::ObjectCC(float x, float y, float size, float speed)
 	object_y = y;
 	object_size = size;
 	object_speed = speed;
+	direction_x = 1;
+	direction_y = 1;
 	object_R = 1;  object_G = 1; object_B = 1;
 	lifeTime = 5.0;
+	life = 5.0;
 }
 ObjectCC::~ObjectCC()
 {
@@ -58,6 +62,7 @@ void ObjectCC::Update(float timeget)
 	object_x += direction_x*object_speed*timeget;
 	object_y += direction_y*object_speed*timeget;
 	lifeTime -= timeget;
+
 }
 void ObjectCC::Set_xy(float x, float y)
 {
@@ -83,4 +88,9 @@ float ObjectCC::GetSize()
 float ObjectCC::GetLifeTime()
 {
 	return lifeTime;
+}
+
+float ObjectCC::GetLife()
+{
+	return life;
 }

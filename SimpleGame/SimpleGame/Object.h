@@ -4,8 +4,14 @@
 #include <iostream>
 #include<math.h>
 #include <time.h>     //time
-
+#include"Renderer.h"
 #include "Dependencies\glew.h"
+
+#define OBJECT_BUILDING 1
+#define OBJECT_CHARACTER 2
+#define OBJECT_BULLET 3
+#define OBJECT_ARROW 4
+
 
 
 class ObjectCC
@@ -13,17 +19,19 @@ class ObjectCC
 private:
 	float object_x, object_y;
 	float object_speed;
+	float object_speedX, object_speedY;
 	float object_size;
 	float direction_x, direction_y;
 	float object_R, object_G, object_B;
 	float lifeTime,life;
+	int object_type;
 public:
 	ObjectCC();
-	ObjectCC(float x, float y, float size, float speed);
+	ObjectCC(float x, float y, int type);
 	~ObjectCC();
 	void DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a);
 	void Update(float timeget);
-	void DrawSence();
+	void DrawSence(Renderer *m_renderer);
 	void Set_xy(float x, float y);
 	void Set_RGB(float R, float G, float B);
 	float GetX();
@@ -31,5 +39,6 @@ public:
 	float GetSize();
 	float GetLifeTime();
 	float GetLife();
+	float SetLife(float damage);
 };
 

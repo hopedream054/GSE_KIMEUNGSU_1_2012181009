@@ -60,7 +60,7 @@ void SpecialKeyInput(int key, int x, int y)
 int main(int argc, char **argv)
 {
 	// Initialize GL things
-	SceMgr = new SceneMgr;
+	
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
@@ -77,10 +77,10 @@ int main(int argc, char **argv)
 		std::cout << "GLEW 3.0 not supported\n ";
 	}
 
-	
+	SceMgr = new SceneMgr(800, 800);
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
-	glutReshapeFunc(Reshape);
+	//glutReshapeFunc(Reshape);
 	glutMouseFunc(MouseInput);
 	glutTimerFunc(30, Timerfunction, 1);
 	glutMainLoop();

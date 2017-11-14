@@ -13,7 +13,6 @@
 #define OBJECT_ARROW 4
 
 
-
 class ObjectCC
 {
 private:
@@ -29,13 +28,15 @@ public:
 	ObjectCC();
 	ObjectCC(float x, float y, int type);
 	~ObjectCC();
-	void DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a);
 	void Update(float timeget);
-	void DrawSence(Renderer *m_renderer);
+	void DrawSolidRect(Renderer *m_renderer);
+	void DrawTexturedRect(Renderer *m_renderer, GLuint Image);
 	void Set_xy(float x, float y);
 	void Set_RGB(float R, float G, float B);
 	float GetX();
 	float GetY();
+	float RealGetX();
+	float RealGetY();
 	float GetSize();
 	float GetLifeTime();
 	float GetLife();

@@ -79,10 +79,11 @@ int main(int argc, char **argv)
 
 	SceMgr = new SceneMgr(800, 800);
 	glutDisplayFunc(RenderScene);
-	glutIdleFunc(Idle);
+	
 	//glutReshapeFunc(Reshape);
 	glutMouseFunc(MouseInput);
 	glutTimerFunc(30, Timerfunction, 1);
+	glutIdleFunc(Idle);
 	glutMainLoop();
 	//delete g_Renderer;
 

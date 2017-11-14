@@ -23,7 +23,7 @@ ObjectCC::ObjectCC(float x, float y, int type)
 	case OBJECT_BUILDING:
 		object_size = 50;
 		object_speed = 0;
-		life = 30.0;
+		life = 500.0;
 		object_R = 1;  object_G = 1; object_B = 0;
 		break;
 	case OBJECT_CHARACTER:
@@ -36,13 +36,13 @@ ObjectCC::ObjectCC(float x, float y, int type)
 		object_size = 2;
 		object_speed = 600;
 		life = 20.0;
-		object_R = 1;  object_G = 1; object_B = 1;
+		object_R = 1;  object_G = 0; object_B = 0;
 		break;
 	case OBJECT_ARROW:
 		object_size = 2;
 		object_speed = 100;
 		life = 10.0;
-		object_R = 1;  object_G = 1; object_B = 1;
+		object_R = 0;  object_G = 1; object_B = 0;
 		break;
 	}
 	int objectAngle=rand() % 360;
@@ -51,6 +51,7 @@ ObjectCC::ObjectCC(float x, float y, int type)
 	object_type = type;
 	object_x = x-400;
 	object_y = 400-y;
+
 
 	direction_x = 1;
 	direction_y = 1;
@@ -62,24 +63,21 @@ ObjectCC::~ObjectCC()
 {
 	
 }
-
-void ObjectCC::DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a)
-{
-	glBegin(GL_POLYGON);
-	glColor3f(r, g , b);
-	glVertex3f(x, y ,z);
-	glVertex3f(x+size, y ,z);
-	glVertex3f(x + size, y+size,z);
-	glVertex3f(x , y+size,z);
-	glEnd();
-}
-void ObjectCC::DrawSence(Renderer *m_renderer)
+void ObjectCC::DrawSolidRect(Renderer *m_renderer)
 {
 	m_renderer->DrawSolidRect(object_x, object_y, 0, object_size, object_R, object_G, object_B, 1);
+	
 }
 
+void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
+{
+	m_renderer->DrawTexturedRect(object_x, object_y, 0, object_size, object_R, object_G, object_B, 1, m_renderer->CreatePngTexture("./Textures/Mario_Rumble.png"));
+	
+}
 void ObjectCC::Update(float timeget)
 {
+
+
 	if (object_x+ direction_x*object_speedX*timeget >= 400 ||
 		object_x+ direction_x*object_speedX*timeget <= -400)
 	{
@@ -99,6 +97,7 @@ void ObjectCC::Set_xy(float x, float y)
 {
 	object_x = x-400;
 	object_y = 400-y;
+
 }
 void ObjectCC::Set_RGB(float R, float G, float B)
 {
@@ -106,9 +105,17 @@ void ObjectCC::Set_RGB(float R, float G, float B)
 }
 float ObjectCC::GetX()
 {
-	return object_x;
+	return object_x+400;
 }
 float ObjectCC::GetY()
+{
+	return 400-object_y;
+}
+float ObjectCC::RealGetX()
+{
+	return object_x;
+}
+float ObjectCC::RealGetY()
 {
 	return object_y;
 }

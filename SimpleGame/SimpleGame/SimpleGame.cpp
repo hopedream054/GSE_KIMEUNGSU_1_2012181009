@@ -9,6 +9,7 @@ but WITHOUT ANY WARRANTY.
 */
 
 #include "stdafx.h"
+#include "windows.h"
 #include <iostream>
 #include "Dependencies\glew.h"
 #include "Dependencies\freeglut.h"
@@ -20,18 +21,26 @@ Renderer *g_Renderer = NULL;
 
 SceneMgr *SceMgr=NULL;
 
-GLvoid Reshape(int w, int h);
-void Timerfunction(int value);
+DWORD g_prevTime = 0;
+
 
 void RenderScene(void)
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	DWORD currTime = timeGetTime();
+
+	DWORD elapsedTime = currTime - g_prevTime;
+	g_prevTime = currTime;
+
+
+	SceMgr->Update((float)elapsedTime /1000.0);
 	SceMgr->DrawObject();
 	glutSwapBuffers();
 }
-void Update();
+
 void Idle(void)
 {
 	RenderScene();
@@ -64,7 +73,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(800, 800);
+	glutInitWindowSize(WIDTHSIMPLE, HEIGHTSIMPLE);
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
@@ -77,33 +86,17 @@ int main(int argc, char **argv)
 		std::cout << "GLEW 3.0 not supported\n ";
 	}
 
-	SceMgr = new SceneMgr(800, 800);
+	SceMgr = new SceneMgr(WIDTHSIMPLE, HEIGHTSIMPLE);
 	glutDisplayFunc(RenderScene);
 	
 	//glutReshapeFunc(Reshape);
 	glutMouseFunc(MouseInput);
-	glutTimerFunc(30, Timerfunction, 1);
 	glutIdleFunc(Idle);
+
+	g_prevTime = timeGetTime();
+
 	glutMainLoop();
 	//delete g_Renderer;
 
     return 0;
-}
-
-GLvoid Reshape(int w, int h)
-{
-	glViewport(0, 0, w, h);
-	glOrtho(0.0, 800.0, 800.0, 0.0, -1.0, 1.0);
-}
-
-void Timerfunction(int value)
-{
-	Update();
-	glutPostRedisplay(); // 화면 재 출력
-	glutTimerFunc(30, Timerfunction, 1); // 타이머함수 재 설정
-}
-
-void Update()
-{
-	SceMgr->Update();
 }

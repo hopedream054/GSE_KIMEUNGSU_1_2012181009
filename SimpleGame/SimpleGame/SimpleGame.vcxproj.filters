@@ -42,6 +42,9 @@
     <ClInclude Include="LoadPng.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="simplemacro.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -85,6 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\Mario_Rumble.png">
+      <Filter>리소스 파일\Textures</Filter>
+    </Image>
+    <Image Include="Textures\simpsons_PNG88.png">
       <Filter>리소스 파일\Textures</Filter>
     </Image>
   </ItemGroup>

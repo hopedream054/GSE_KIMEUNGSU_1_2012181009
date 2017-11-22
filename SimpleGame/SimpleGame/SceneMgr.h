@@ -1,13 +1,16 @@
 #pragma once
 #include"Object.h"
 #include"Renderer.h"
+#include"simplemacro.h"
 #include <windows.h>
 #include <stdlib.h>       //srand
 #include <time.h>     //time
 
-#define MaxObject 10
-#define MaxBullet 50
+#define MaxObject 20
+#define MaxBullet 100
 #define MaxArrow 100
+#define MaxBuilding 6
+
 #define OBJECT_BUILDING 1
 #define OBJECT_CHARACTER 2
 #define OBJECT_BULLET 3
@@ -17,23 +20,24 @@ class SceneMgr
 {
 private:
 	ObjectCC *object[MaxObject];
-	ObjectCC *building;
+	ObjectCC *building[MaxBuilding];
 	ObjectCC *buildingBullet[MaxBullet];
 	ObjectCC *arrowObject[MaxArrow];
 	int arrowType[MaxArrow];
 	float characterTime[MaxObject];
+	float createRedTime;
+	float bulletTime[MaxBuilding];
 	int n_building,n_bullet,n_arrow;
 	int now;
 	float prevTime;
 	float mouseTime;
-	float bulletTime;
-	GLuint dd;
+	GLuint m_texRedBuilding;
+	GLuint m_texBlueBuilding;
 	Renderer *m_renderer;
-
 public:
 	SceneMgr(int width, int height);
 	~SceneMgr();
-	void Update();
+	void Update(float elapsedTime);
 	void DrawObject();
 	void MouseSet(int x, int y);
 	void CollisionTest();

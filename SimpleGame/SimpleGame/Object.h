@@ -5,6 +5,8 @@
 #include<math.h>
 #include <time.h>     //time
 #include"Renderer.h"
+#include"simplemacro.h"
+
 #include "Dependencies\glew.h"
 
 #define OBJECT_BUILDING 1
@@ -24,9 +26,10 @@ private:
 	float object_R, object_G, object_B;
 	float lifeTime,life;
 	int object_type;
+	int objectTeam_type;
 public:
 	ObjectCC();
-	ObjectCC(float x, float y, int type);
+	ObjectCC(float x, float y, int type, int teamtype);
 	~ObjectCC();
 	void Update(float timeget);
 	void DrawSolidRect(Renderer *m_renderer);
@@ -41,5 +44,6 @@ public:
 	float GetLifeTime();
 	float GetLife();
 	float SetLife(float damage);
+	int GetTeamType();
 };
 

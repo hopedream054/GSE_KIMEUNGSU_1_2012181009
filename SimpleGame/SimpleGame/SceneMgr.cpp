@@ -57,7 +57,7 @@ void SceneMgr::Update(float elapsedTime)
 
 	createRedTime += elapsedTime;
 
-	if (createRedTime > 5) //북쪽 캐릭터 생성 5초마다 생성
+	if (createRedTime > 0.5) //북쪽 캐릭터 생성 0.5초마다 생성
 	{
 		for (int i = 0; i < MaxObject; ++i)
 		{
@@ -75,7 +75,7 @@ void SceneMgr::Update(float elapsedTime)
 		{
 			object[i]->Update(elapsedTime);
 			characterTime[i] += elapsedTime;
-			if (characterTime[i] > 3) //3초마다 생성
+			if (characterTime[i] > 1) //1초마다 생성
 			{
 				characterTime[i] = 0;
 				n_arrow = (n_arrow + 1) % MaxArrow;
@@ -90,12 +90,15 @@ void SceneMgr::Update(float elapsedTime)
 	{
 		if (arrowObject[i])
 		{
-			arrowObject[i]->Update(elapsedTime);
+			if (arrowObject[i]->Update(elapsedTime)) arrowObject[i]= NULL;
 		}
 	}
 	for (int i = 0; i < MaxBullet; ++i)
 	{
-		if (buildingBullet[i]) buildingBullet[i]->Update(elapsedTime);
+		if (buildingBullet[i])
+		{
+			if (buildingBullet[i]->Update(elapsedTime)) buildingBullet[i] = NULL;
+		}
 	}
 
 	for (int i = 0; i < MaxBuilding; ++i) //빌딩의 총알
@@ -104,7 +107,7 @@ void SceneMgr::Update(float elapsedTime)
 		{
 			building[i]->Update(elapsedTime);
 			bulletTime[i] += elapsedTime;
-			if (bulletTime[i] > 10) //10초마다 발사
+			if (bulletTime[i] >0.5) //0.5초마다 발사
 			{
 
 				buildingBullet[(++n_bullet) % MaxBullet] = new ObjectCC(building[i]->GetX(), building[i]->GetY()
@@ -148,7 +151,7 @@ void SceneMgr::MouseSet(int x, int y)
 {
 	float nowTime = (float)timeGetTime() / 1000.0f;
 
-	if (nowTime - mouseTime > 7.0)
+	if (nowTime - mouseTime > 0.3)
 	{
 		now = (now + 1) % MaxObject;
 		int ttnow = 0;
@@ -180,29 +183,48 @@ void SceneMgr::CollisionTest()
 	int check;
 	for (int i = 0; i < MaxObject; ++i)
 	{
-		check = 1;
 		for (int j = 0; j < MaxBuilding; ++j)
 		{
 			if (object[i] != NULL && building[j] != NULL && object[i]->GetTeamType() != building[j]->GetTeamType()
 				&& Collision(object[i]->GetX(), object[i]->GetY(), object[i]->GetSize(), building[j]->GetX(), building[j]->GetY(), building[j]->GetSize()))
 			{
-				check = 0;
 				building[j]->SetLife(-object[i]->GetLife());
 				object[i]->SetLife(-object[i]->GetLife());
 				printf("%d번 캐릭터 , 빌딩 명중 \n", i);
 			}
 		}
-		
-		if(check)
+
+	}
+	for (int i = 0; i < MaxBullet; ++i)
+	{
+		check = 1;
+		for (int j = 0; j < MaxObject; ++j)
 		{
-			for (int j = 0; j < MaxBullet; ++j)
+			if (buildingBullet[i] != NULL && object[j] != NULL && buildingBullet[i]->GetTeamType() != object[j]->GetTeamType()
+				&& Collision(buildingBullet[i]->GetX(), buildingBullet[i]->GetY(), buildingBullet[i]->GetSize(), object[j]->GetX(), object[j]->GetY(), object[j]->GetSize()))
 			{
-				if ( object[i] != NULL && buildingBullet[j] != NULL && object[i]->GetTeamType() != buildingBullet[j]->GetTeamType() 
-					&&Collision(object[i]->GetX(), object[i]->GetY(), object[i]->GetSize(), buildingBullet[j]->GetX(), buildingBullet[j]->GetY(), buildingBullet[j]->GetSize()))
+				check = 0;
+				object[j]->SetLife(-buildingBullet[i]->GetLife());
+				buildingBullet[i]->SetLife(-buildingBullet[i]->GetLife());
+				printf("%d번 총알 , %d번 캐릭터에 명중 \n", j, i);
+			}
+		}
+		//이미지가 상좌에 배치됨 - 수정완료
+		//제목에따라 잘되는가
+		//데미지리스트에 따라 충돌
+		//렌더링순위에 따라
+		//쿨타임자유
+		if (check)
+		{
+			for (int j = 0; j < MaxBuilding; ++j)
+			{
+				if (buildingBullet[i] != NULL && building[j] != NULL && buildingBullet[i]->GetTeamType() != building[j]->GetTeamType()
+					&& Collision(buildingBullet[i]->GetX(), buildingBullet[i]->GetY(), buildingBullet[i]->GetSize(), building[j]->GetX(), building[j]->GetY(), building[j]->GetSize()))
 				{
-					object[i]->SetLife(-buildingBullet[j]->GetLife());
-					buildingBullet[j]->SetLife(-buildingBullet[j]->GetLife());
-					printf("%d번 총알 , %d번 캐릭터에 명중 \n", j,i);
+					check = 0;
+					building[j]->SetLife(-buildingBullet[i]->GetLife());
+					buildingBullet[i]->SetLife(-buildingBullet[i]->GetLife());
+					printf("%d번 총알 , %d번 캐릭터에 명중 \n", j, i);
 				}
 			}
 		}
@@ -235,10 +257,10 @@ void SceneMgr::CollisionTest()
 
 bool SceneMgr::Collision(float ix, float iy, float isize, float jx, float jy, float jsize )
 {
-	if (ix<jx + jsize && iy<jy + jsize && ix>jx && iy>jy) return true;
-	if (ix+isize>jx && ix + isize<jx+jsize && iy<jy + jsize && iy>jy) return true;
-	if (ix + isize>jx && ix + isize<jx + jsize && iy+isize<jy + jsize && iy + isize>jy) return true;
-	if (ix>jx && ix<jx + jsize && iy + isize<jy + jsize && iy + isize>jy) return true;
+	if (ix-isize/2 <jx + jsize / 2 && iy - isize / 2<jy + jsize / 2 && ix - isize / 2>jx - jsize / 2 && iy - isize / 2>jy - jsize / 2) return true;
+	if (ix+isize/2>jx- jsize / 2 && ix + isize / 2<jx+jsize / 2 && iy - isize / 2<jy + jsize / 2 && iy - isize / 2>jy - jsize / 2) return true;
+	if (ix + isize / 2>jx - jsize / 2 && ix + isize / 2<jx + jsize / 2 && iy+isize / 2<jy + jsize/2 && iy + isize / 2>jy- jsize/2) return true;
+	if (ix - isize / 2>jx - jsize / 2 && ix - isize / 2<jx + jsize/2 && iy + isize / 2<jy + jsize / 2 && iy + isize / 2>jy - jsize / 2) return true;
 
 	return false;
 }
@@ -286,7 +308,7 @@ void  SceneMgr::ObjectLifeover()
 	{
 		if (building[i] != NULL && building[i]->GetLife() <= 0)
 		{
-			delete building;
+			delete building[i];
 			building[i] = NULL;
 		}
 	}

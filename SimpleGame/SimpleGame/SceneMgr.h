@@ -6,7 +6,7 @@
 #include <stdlib.h>       //srand
 #include <time.h>     //time
 
-#define MaxObject 20
+#define MaxObject 50
 #define MaxBullet 100
 #define MaxArrow 100
 #define MaxBuilding 6

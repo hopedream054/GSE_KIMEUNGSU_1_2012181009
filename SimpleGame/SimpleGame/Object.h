@@ -27,11 +27,12 @@ private:
 	float lifeTime,life;
 	int object_type;
 	int objectTeam_type;
+	float object_level;
 public:
 	ObjectCC();
 	ObjectCC(float x, float y, int type, int teamtype);
 	~ObjectCC();
-	void Update(float timeget);
+	int Update(float timeget);
 	void DrawSolidRect(Renderer *m_renderer);
 	void DrawTexturedRect(Renderer *m_renderer, GLuint Image);
 	void Set_xy(float x, float y);

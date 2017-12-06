@@ -31,8 +31,13 @@ private:
 	int now;
 	float prevTime;
 	float mouseTime;
+	float saveTime;
 	GLuint m_texRedBuilding;
 	GLuint m_texBlueBuilding;
+	GLuint m_texBackground;
+	GLuint m_texSprite;
+	GLuint m_texSpriteReverse;
+	GLuint m_texParticle;
 	Renderer *m_renderer;
 public:
 	SceneMgr(int width, int height);

@@ -9,6 +9,10 @@ SceneMgr::SceneMgr(int width, int height)
 	
 	m_texBlueBuilding = m_renderer->CreatePngTexture("./Textures/Mario_Rumble.png");
 	m_texRedBuilding= m_renderer->CreatePngTexture("./Textures/simpsons_PNG88.png");
+	m_texBackground= m_renderer->CreatePngTexture("./Textures/background.png");
+	m_texSprite= m_renderer->CreatePngTexture("./Textures/lusiu.png");
+	m_texSpriteReverse = m_renderer->CreatePngTexture("./Textures/lusiu2.png");
+	m_texParticle = m_renderer->CreatePngTexture("./Textures/particle.png");
 	if (!m_renderer->IsInitialized())
 	{
 		std::cout << "SceneMgr::Renderer could not be initialized.. \n";
@@ -41,7 +45,8 @@ SceneMgr::SceneMgr(int width, int height)
 	building[3] = new ObjectCC(width / 4*1, 700, OBJECT_BUILDING, BLUETEAM);
 	building[4] = new ObjectCC(width / 4*2, 700, OBJECT_BUILDING, BLUETEAM);
 	building[5] = new ObjectCC(width / 4*3, 700, OBJECT_BUILDING, BLUETEAM);
-
+	
+	saveTime = 0;
 	for (int i = 0; i < MaxBuilding; ++i) bulletTime[i] = 10;
 	
 };
@@ -54,8 +59,10 @@ SceneMgr::~SceneMgr()
 void SceneMgr::Update(float elapsedTime)
 {
 	float nowTime = (float)timeGetTime() / 1000.0f;
-
+	
 	createRedTime += elapsedTime;
+
+	saveTime += elapsedTime;//파티클떄문에 시간지속
 
 	if (createRedTime > 0.5) //북쪽 캐릭터 생성 0.5초마다 생성
 	{
@@ -124,9 +131,16 @@ void SceneMgr::Update(float elapsedTime)
 
 void SceneMgr::DrawObject()
 {
+	m_renderer->DrawTexturedRect(0, 0, 0, 800, 1, 1, 1, 1, m_texBackground, 0.99);
 	for (int i = 0; i < MaxObject; ++i)
 	{
-		if(object[i]) object[i]->DrawSolidRect(m_renderer);
+		if (object[i])
+		{
+			
+			
+			if (object[i]->GetTeamType() == REDTEAM) object[i]->DrawTexturedRect(m_renderer, m_texSpriteReverse);
+			else if (object[i]->GetTeamType() == BLUETEAM) object[i]->DrawTexturedRect(m_renderer, m_texSprite);
+		}
 	}
 	for (int i = 0; i < MaxArrow; ++i)
 	{
@@ -134,7 +148,10 @@ void SceneMgr::DrawObject()
 	}
 	for (int i = 0; i < MaxBullet; ++i)
 	{
-		if (buildingBullet[i]) buildingBullet[i]->DrawSolidRect(m_renderer);
+		if (buildingBullet[i])
+		{
+			buildingBullet[i]->DrawSolidBullet(m_renderer, m_texParticle,saveTime);
+		}
 	}
 	for (int i = 0; i < MaxBuilding; ++i)
 	{
@@ -144,6 +161,7 @@ void SceneMgr::DrawObject()
 			else if (building[i]->GetTeamType() == BLUETEAM) building[i]->DrawTexturedRect(m_renderer, m_texBlueBuilding);
 		}
 	}
+	
 	
 }
 
@@ -257,10 +275,8 @@ void SceneMgr::CollisionTest()
 
 bool SceneMgr::Collision(float ix, float iy, float isize, float jx, float jy, float jsize )
 {
-	if (ix-isize/2 <jx + jsize / 2 && iy - isize / 2<jy + jsize / 2 && ix - isize / 2>jx - jsize / 2 && iy - isize / 2>jy - jsize / 2) return true;
-	if (ix+isize/2>jx- jsize / 2 && ix + isize / 2<jx+jsize / 2 && iy - isize / 2<jy + jsize / 2 && iy - isize / 2>jy - jsize / 2) return true;
-	if (ix + isize / 2>jx - jsize / 2 && ix + isize / 2<jx + jsize / 2 && iy+isize / 2<jy + jsize/2 && iy + isize / 2>jy- jsize/2) return true;
-	if (ix - isize / 2>jx - jsize / 2 && ix - isize / 2<jx + jsize/2 && iy + isize / 2<jy + jsize / 2 && iy + isize / 2>jy - jsize / 2) return true;
+
+	if (ix - isize / 2 < jx + jsize / 2 && iy + isize / 2 > jy - jsize / 2 && ix + isize / 2 > jx - jsize / 2 && iy - isize / 2 < jy + jsize / 2) return true;
 
 	return false;
 }

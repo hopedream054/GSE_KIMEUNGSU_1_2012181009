@@ -43,7 +43,7 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 		break;
 	case OBJECT_BULLET:
 		object_size = 4;
-		object_speed = 600;
+		object_speed = 100;
 		life = 15.0;
 		object_level = LEVEL_UNDERGROUND;
 		if (teamtype == REDTEAM)
@@ -70,9 +70,9 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 		}
 		break;
 	}
-	int objectAngle=rand() % 360;
+	objectAngle=rand() % 360;
 	object_speedX = ( int(cos(objectAngle)*object_speed))%700;
-	object_speedY= (int(tan(objectAngle)*object_speed))%700;
+	object_speedY= (int(sin(objectAngle)*object_speed))%700;
 	object_type = type;
 	object_x = x-WIDTHSIMPLE/2;
 	object_y = HEIGHTSIMPLE / 2 -y;
@@ -82,21 +82,33 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 	direction_y = 1;
 	
 	lifeTime = 5.0;
-	
+	aniTime = -1;
 }
 ObjectCC::~ObjectCC()
 {
 	
 }
+void ObjectCC::DrawSolidBullet(Renderer *m_renderer, GLuint Image,float saveTime)
+{
+	m_renderer->DrawSolidRect(object_x, object_y, 0, object_size, object_R, object_G, object_B, 1, object_level);
+	//각도추가할것
+	//파일정리할것(정크파일들이 너무많음)
+	//PNG좀 그럴듯한걸로 찾을것
+	//이걸 부디 숙지할것.
+	int particleDirX=0, particleDirY=0;
+	if (object_speedY >40) {
+		particleDirX = 0;
+		particleDirY = -5;
+	}
+	if (object_speedY <-40) {
+		particleDirX = 0;
+		particleDirY = 5;
+	}
+	m_renderer->DrawParticle(object_x, object_y, 0, 10, 1, 1, 1, 0.5, particleDirX, particleDirY, Image, saveTime/5);
+}
 void ObjectCC::DrawSolidRect(Renderer *m_renderer)
 {
-	if (object_type == OBJECT_CHARACTER)
-	{
-		if (objectTeam_type == BLUETEAM) m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2+5, 0, object_size, 4, 0, 0, 1, 1, (float)life / 100, object_level);
-		else if (objectTeam_type == REDTEAM) m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 1, 0, 0, 1, (float)life / 100, object_level);
-	}
 	m_renderer->DrawSolidRect(object_x, object_y, 0, object_size, object_R, object_G, object_B, 1, object_level);
-	
 }
 
 void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
@@ -105,9 +117,24 @@ void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
 	{
 		if (objectTeam_type == BLUETEAM) m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 0, 0, 1, 1, (float)life / 500, object_level);
 		else if (objectTeam_type == REDTEAM) m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 1, 0, 0, 1, (float)life / 500, object_level);
+		m_renderer->DrawTexturedRect(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, object_level);
+	}
+	else if (object_type == OBJECT_CHARACTER)
+	{
+		if (objectTeam_type == BLUETEAM)
+		{
+			aniTime = (++aniTime) % 10;
+			m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 0, 0, 1, 1, (float)life / 100, object_level);
+			m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 10, 1, object_level);
+		}
+		else if (objectTeam_type == REDTEAM)
+		{
+			aniTime = (++aniTime) % 10;
+			m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 1, 0, 0, 1, (float)life / 100, object_level);
+			m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 10, 1, object_level);
+		}
 	}
 	
-	m_renderer->DrawTexturedRect(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, object_level);
 }
 int ObjectCC::Update(float timeget)
 {

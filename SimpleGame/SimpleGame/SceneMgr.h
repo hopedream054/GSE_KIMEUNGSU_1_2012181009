@@ -1,9 +1,12 @@
 #pragma once
+
 #include"Object.h"
 #include"Renderer.h"
 #include"simplemacro.h"
+#include "Sound.h"//srand
 #include <windows.h>
 #include <stdlib.h>       //srand
+
 #include <time.h>     //time
 
 #define MaxObject 50
@@ -15,6 +18,7 @@
 #define OBJECT_CHARACTER 2
 #define OBJECT_BULLET 3
 #define OBJECT_ARROW 4
+
 
 class SceneMgr
 {
@@ -39,6 +43,8 @@ private:
 	GLuint m_texSpriteReverse;
 	GLuint m_texParticle;
 	Renderer *m_renderer;
+	Sound *	m_sound;
+	int soundBG;
 public:
 	SceneMgr(int width, int height);
 	~SceneMgr();

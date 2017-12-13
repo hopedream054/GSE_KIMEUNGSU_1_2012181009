@@ -4,14 +4,14 @@
 
 SceneMgr::SceneMgr(int width, int height)
 {
-
+	
 	m_renderer = new Renderer(width, height);
 	
-	m_texBlueBuilding = m_renderer->CreatePngTexture("./Textures/Mario_Rumble.png");
-	m_texRedBuilding= m_renderer->CreatePngTexture("./Textures/simpsons_PNG88.png");
+	m_texBlueBuilding = m_renderer->CreatePngTexture("./Textures/building1.png");
+	m_texRedBuilding= m_renderer->CreatePngTexture("./Textures/building2.png");
 	m_texBackground= m_renderer->CreatePngTexture("./Textures/background.png");
-	m_texSprite= m_renderer->CreatePngTexture("./Textures/lusiu.png");
-	m_texSpriteReverse = m_renderer->CreatePngTexture("./Textures/lusiu2.png");
+	m_texSprite= m_renderer->CreatePngTexture("./Textures/eirp1.png");
+	m_texSpriteReverse = m_renderer->CreatePngTexture("./Textures/eirp2.png");
 	m_texParticle = m_renderer->CreatePngTexture("./Textures/particle.png");
 	if (!m_renderer->IsInitialized())
 	{
@@ -49,6 +49,11 @@ SceneMgr::SceneMgr(int width, int height)
 	saveTime = 0;
 	for (int i = 0; i < MaxBuilding; ++i) bulletTime[i] = 10;
 	
+	m_sound = new Sound();
+
+	soundBG = m_sound->CreateSound("./Dependencies/SoundSamples/MF-W-90.XM");
+	m_sound->PlaySound(soundBG, true, 0.2f);
+
 };
 
 SceneMgr::~SceneMgr()
@@ -64,7 +69,7 @@ void SceneMgr::Update(float elapsedTime)
 
 	saveTime += elapsedTime;//파티클떄문에 시간지속
 
-	if (createRedTime > 0.5) //북쪽 캐릭터 생성 0.5초마다 생성
+	if (createRedTime > 0.8) //북쪽 캐릭터 생성 0.5초마다 생성
 	{
 		for (int i = 0; i < MaxObject; ++i)
 		{
@@ -161,7 +166,8 @@ void SceneMgr::DrawObject()
 			else if (building[i]->GetTeamType() == BLUETEAM) building[i]->DrawTexturedRect(m_renderer, m_texBlueBuilding);
 		}
 	}
-	
+	m_renderer->DrawText(0, 0, GLUT_BITMAP_TIMES_ROMAN_24,0, 1, 1, "character");
+
 	
 }
 

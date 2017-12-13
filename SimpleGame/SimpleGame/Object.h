@@ -30,6 +30,7 @@ private:
 	float object_level;
 	int aniTime;
 	int objectAngle;
+	int unitType;
 public:
 	ObjectCC();
 	ObjectCC(float x, float y, int type, int teamtype);

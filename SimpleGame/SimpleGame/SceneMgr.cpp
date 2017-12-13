@@ -166,8 +166,8 @@ void SceneMgr::DrawObject()
 			else if (building[i]->GetTeamType() == BLUETEAM) building[i]->DrawTexturedRect(m_renderer, m_texBlueBuilding);
 		}
 	}
-	m_renderer->DrawText(0, 0, GLUT_BITMAP_TIMES_ROMAN_24,0, 1, 1, "character");
-
+	m_renderer->DrawText(-60, 370, GLUT_BITMAP_TIMES_ROMAN_24,0, 0, 0, "Red Team");
+	m_renderer->DrawText(-60, -370, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0, 0, "Blue Team");
 	
 }
 

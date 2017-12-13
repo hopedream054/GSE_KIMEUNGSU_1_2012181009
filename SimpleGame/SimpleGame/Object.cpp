@@ -44,7 +44,7 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 			{
 				unitType = 1;
 				object_R = 1;  object_G = 0; object_B = 0;
-				object_speedY = -3;
+				object_speedY = -10;
 				object_speedX = 0;
 				object_size = 80;
 				life = 250.0;
@@ -62,7 +62,7 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 			{
 				unitType = 1;
 				object_R = 0;  object_G = 0; object_B = 1;
-				object_speedY = 3;
+				object_speedY = 10;
 				object_speedX = 0;
 				object_size = 80;
 				life = 250.0;

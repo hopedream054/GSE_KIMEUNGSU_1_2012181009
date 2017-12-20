@@ -13,6 +13,7 @@ SceneMgr::SceneMgr(int width, int height)
 	m_texSprite= m_renderer->CreatePngTexture("./Textures/eirp1.png");
 	m_texSpriteReverse = m_renderer->CreatePngTexture("./Textures/eirp2.png");
 	m_texParticle = m_renderer->CreatePngTexture("./Textures/particle.png");
+	m_texRainParticle= m_renderer->CreatePngTexture("./Textures/rain.png");
 	if (!m_renderer->IsInitialized())
 	{
 		std::cout << "SceneMgr::Renderer could not be initialized.. \n";
@@ -47,6 +48,8 @@ SceneMgr::SceneMgr(int width, int height)
 	building[5] = new ObjectCC(width / 4*3, 700, OBJECT_BUILDING, BLUETEAM);
 	
 	saveTime = 0;
+	flowTime = 0;
+
 	for (int i = 0; i < MaxBuilding; ++i) bulletTime[i] = 10;
 	
 	m_sound = new Sound();
@@ -68,7 +71,7 @@ void SceneMgr::Update(float elapsedTime)
 	createRedTime += elapsedTime;
 
 	saveTime += elapsedTime;//파티클떄문에 시간지속
-
+	flowTime = elapsedTime;
 	if (createRedTime > 0.8) //북쪽 캐릭터 생성 0.5초마다 생성
 	{
 		for (int i = 0; i < MaxObject; ++i)
@@ -119,7 +122,7 @@ void SceneMgr::Update(float elapsedTime)
 		{
 			building[i]->Update(elapsedTime);
 			bulletTime[i] += elapsedTime;
-			if (bulletTime[i] >0.5) //0.5초마다 발사
+			if (bulletTime[i] >1) //0.5초마다 발사
 			{
 
 				buildingBullet[(++n_bullet) % MaxBullet] = new ObjectCC(building[i]->GetX(), building[i]->GetY()
@@ -137,6 +140,7 @@ void SceneMgr::Update(float elapsedTime)
 void SceneMgr::DrawObject()
 {
 	m_renderer->DrawTexturedRect(0, 0, 0, 800, 1, 1, 1, 1, m_texBackground, 0.99);
+
 	for (int i = 0; i < MaxObject; ++i)
 	{
 		if (object[i])
@@ -155,7 +159,7 @@ void SceneMgr::DrawObject()
 	{
 		if (buildingBullet[i])
 		{
-			buildingBullet[i]->DrawSolidBullet(m_renderer, m_texParticle,saveTime);
+			buildingBullet[i]->DrawSolidBullet(m_renderer, m_texParticle, flowTime);
 		}
 	}
 	for (int i = 0; i < MaxBuilding; ++i)
@@ -168,7 +172,10 @@ void SceneMgr::DrawObject()
 	}
 	m_renderer->DrawText(-60, 370, GLUT_BITMAP_TIMES_ROMAN_24,0, 0, 0, "Red Team");
 	m_renderer->DrawText(-60, -370, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0, 0, "Blue Team");
-	
+
+	m_renderer->DrawParticleClimate(0, 0, 0, 1, 1, 1, 1, 1, -0.3, -0.3, m_texRainParticle, saveTime, 0.01);
+	//DrawArrays  m_ParticleVertexCount를  6의배수
+	//조건문그리면
 }
 
 void SceneMgr::MouseSet(int x, int y)

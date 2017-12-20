@@ -128,6 +128,7 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 	
 	lifeTime = 5.0;
 	aniTime = -1;
+	particleTime = 0;
 }
 ObjectCC::~ObjectCC()
 {
@@ -140,16 +141,18 @@ void ObjectCC::DrawSolidBullet(Renderer *m_renderer, GLuint Image,float saveTime
 	//파일정리할것(정크파일들이 너무많음)
 	//PNG좀 그럴듯한걸로 찾을것
 	//이걸 부디 숙지할것.
-	int particleDirX=0, particleDirY=0;
-	if (object_speedY >40) {
+	int particleDirX= object_speedX/20*-1, particleDirY= object_speedY/20*-1;
+	
+	/*if (object_speedY >40) {
 		particleDirX = 0;
 		particleDirY = -5;
 	}
 	if (object_speedY <-40) {
 		particleDirX = 0;
 		particleDirY = 5;
-	}
-	m_renderer->DrawParticle(object_x, object_y, 0, 10, 1, 1, 1, 0.5, particleDirX, particleDirY, Image, saveTime/5);
+	}*/
+	m_renderer->DrawParticle(object_x, object_y, 0, 10, 1, 1, 1, 0.9, particleDirX, particleDirY, Image, particleTime, LEVEL_UNDERGROUND);
+	particleTime += saveTime / 5;
 }
 void ObjectCC::DrawSolidRect(Renderer *m_renderer)
 {

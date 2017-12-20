@@ -36,15 +36,20 @@ private:
 	float prevTime;
 	float mouseTime;
 	float saveTime;
+	float flowTime;//현재 지나간시간
+	
+	Renderer *m_renderer;
+	Sound *	m_sound;
+	int soundBG;
+
 	GLuint m_texRedBuilding;
 	GLuint m_texBlueBuilding;
 	GLuint m_texBackground;
 	GLuint m_texSprite;
 	GLuint m_texSpriteReverse;
 	GLuint m_texParticle;
-	Renderer *m_renderer;
-	Sound *	m_sound;
-	int soundBG;
+	GLuint m_texRainParticle;
+
 public:
 	SceneMgr(int width, int height);
 	~SceneMgr();

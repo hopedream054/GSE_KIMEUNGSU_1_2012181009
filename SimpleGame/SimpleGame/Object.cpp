@@ -32,6 +32,7 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 		{
 			life = 2000.0;
 			object_size = 300;
+			aniboss = 0;
 		}
 		break;
 	case OBJECT_CHARACTER:
@@ -179,7 +180,7 @@ void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
 		}
 		else if (objectTeam_type == REDTEAM)
 		{
-			aniTime = (++aniTime) % 20;
+			
 			m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 1, 0, 0, 1, (float)life / 2000, object_level);
 			m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 20, 1, object_level);
 		}
@@ -241,6 +242,17 @@ int ObjectCC::Update(float timeget)
 	}
 	object_x += direction_x*object_speedX*timeget;
 	object_y += direction_y*object_speedY*timeget;
+
+	if (object_type == OBJECT_BUILDING && objectTeam_type==REDTEAM)
+	{
+		aniboss+= timeget;
+		if (aniboss > 0.1)
+		{
+			aniTime = (++aniTime) % 20;
+			aniboss = 0;
+		}
+	}
+
 	lifeTime -= timeget;
 	return 0;
 }

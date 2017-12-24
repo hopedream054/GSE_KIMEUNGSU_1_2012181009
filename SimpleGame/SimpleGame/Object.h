@@ -32,6 +32,7 @@ private:
 	int objectAngle;
 	int unitType;
 	float particleTime;
+	float aniboss;
 public:
 	ObjectCC();
 	ObjectCC(float x, float y, int type, int teamtype);

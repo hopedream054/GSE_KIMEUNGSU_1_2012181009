@@ -8,12 +8,16 @@ SceneMgr::SceneMgr(int width, int height)
 	m_renderer = new Renderer(width, height);
 	
 	m_texBlueBuilding = m_renderer->CreatePngTexture("./Textures/building1.png");
-	m_texRedBuilding= m_renderer->CreatePngTexture("./Textures/building2.png");
 	m_texBackground= m_renderer->CreatePngTexture("./Textures/background.png");
 	m_texSprite= m_renderer->CreatePngTexture("./Textures/eirp1.png");
 	m_texSpriteReverse = m_renderer->CreatePngTexture("./Textures/eirp2.png");
-	m_texParticle = m_renderer->CreatePngTexture("./Textures/particle.png");
+	m_texParticleRed = m_renderer->CreatePngTexture("./Textures/particlered.png");
+	m_texParticleBlue = m_renderer->CreatePngTexture("./Textures/particleblue.png");
 	m_texRainParticle= m_renderer->CreatePngTexture("./Textures/rain.png");
+	m_texBoss= m_renderer->CreatePngTexture("./Textures/boss.png");
+	m_texBulletRed = m_renderer->CreatePngTexture("./Textures/bulletred.png");
+	m_texBulletBlue = m_renderer->CreatePngTexture("./Textures/bulletblue.png");
+
 	if (!m_renderer->IsInitialized())
 	{
 		std::cout << "SceneMgr::Renderer could not be initialized.. \n";
@@ -40,12 +44,10 @@ SceneMgr::SceneMgr(int width, int height)
 		arrowObject[i] = NULL;
 		arrowType[i] = -1;
 	}
-	building[0] = new ObjectCC(width/4*1, 100, OBJECT_BUILDING,REDTEAM);
-	building[1] = new ObjectCC(width / 4*2, 100, OBJECT_BUILDING, REDTEAM);
-	building[2] = new ObjectCC(width / 4*3, 100, OBJECT_BUILDING, REDTEAM);
-	building[3] = new ObjectCC(width / 4*1, 700, OBJECT_BUILDING, BLUETEAM);
-	building[4] = new ObjectCC(width / 4*2, 700, OBJECT_BUILDING, BLUETEAM);
-	building[5] = new ObjectCC(width / 4*3, 700, OBJECT_BUILDING, BLUETEAM);
+	building[0] = new ObjectCC(width/2, 160, OBJECT_BUILDING,REDTEAM);
+	building[1] = new ObjectCC(width / 4*1, 700, OBJECT_BUILDING, BLUETEAM);
+	building[2] = new ObjectCC(width / 4*2, 700, OBJECT_BUILDING, BLUETEAM);
+	building[3] = new ObjectCC(width / 4*3, 700, OBJECT_BUILDING, BLUETEAM);
 	
 	saveTime = 0;
 	flowTime = 0;
@@ -72,7 +74,7 @@ void SceneMgr::Update(float elapsedTime)
 
 	saveTime += elapsedTime;//파티클떄문에 시간지속
 	flowTime = elapsedTime;
-	if (createRedTime > 0.8) //북쪽 캐릭터 생성 0.5초마다 생성
+	if (createRedTime > 0.8 && building[0]) //북쪽 캐릭터 생성 0.5초마다 생성
 	{
 		for (int i = 0; i < MaxObject; ++i)
 		{
@@ -122,12 +124,30 @@ void SceneMgr::Update(float elapsedTime)
 		{
 			building[i]->Update(elapsedTime);
 			bulletTime[i] += elapsedTime;
-			if (bulletTime[i] >1) //0.5초마다 발사
-			{
 
-				buildingBullet[(++n_bullet) % MaxBullet] = new ObjectCC(building[i]->GetX(), building[i]->GetY()
-					, OBJECT_BULLET, building[i]->GetTeamType());
-				bulletTime[i] = 0;
+
+
+			if (building[i]->GetTeamType() == BLUETEAM)
+			{
+				if (bulletTime[i] >1) //0.5초마다 발사
+				{
+
+					buildingBullet[(++n_bullet) % MaxBullet] = new ObjectCC(building[i]->GetX(), building[i]->GetY()
+						, OBJECT_BULLET, building[i]->GetTeamType());
+					bulletTime[i] = 0;
+				}
+			}
+			else if (building[i]->GetTeamType() == REDTEAM)
+			{
+				if (bulletTime[i] >0.4) //0.5초마다 발사
+				{
+
+					buildingBullet[(++n_bullet) % MaxBullet] = new ObjectCC(building[i]->GetX()+105, building[i]->GetY()+110
+						, OBJECT_BULLET, building[i]->GetTeamType());
+					buildingBullet[(++n_bullet) % MaxBullet] = new ObjectCC(building[i]->GetX() - 105, building[i]->GetY()+110
+						, OBJECT_BULLET, building[i]->GetTeamType());
+					bulletTime[i] = 0;
+				}
 			}
 		}
 	}
@@ -153,20 +173,40 @@ void SceneMgr::DrawObject()
 	}
 	for (int i = 0; i < MaxArrow; ++i)
 	{
-		if (arrowObject[i]) arrowObject[i]->DrawSolidRect(m_renderer);
+		if (arrowObject[i])
+		{
+			if (arrowObject[i]->GetTeamType() == BLUETEAM)
+			{
+				arrowObject[i]->DrawTexturedRect(m_renderer, m_texBulletBlue);
+
+			}
+			else if (arrowObject[i]->GetTeamType() == REDTEAM)
+			{
+				arrowObject[i]->DrawTexturedRect(m_renderer, m_texBulletRed);
+			}
+			
+		}
 	}
 	for (int i = 0; i < MaxBullet; ++i)
 	{
 		if (buildingBullet[i])
 		{
-			buildingBullet[i]->DrawSolidBullet(m_renderer, m_texParticle, flowTime);
+			if (buildingBullet[i]->GetTeamType() == BLUETEAM)
+			{
+				buildingBullet[i]->DrawSolidBullet(m_renderer, m_texParticleBlue, flowTime);
+			}
+			else if (buildingBullet[i]->GetTeamType() == REDTEAM)
+			{
+				buildingBullet[i]->DrawSolidBullet(m_renderer, m_texParticleRed, flowTime);
+			}
+			
 		}
 	}
 	for (int i = 0; i < MaxBuilding; ++i)
 	{
 		if (building[i])
 		{
-			if(building[i]->GetTeamType()==REDTEAM) building[i]->DrawTexturedRect(m_renderer, m_texRedBuilding);
+			if(building[i]->GetTeamType()==REDTEAM) building[i]->DrawTexturedRect(m_renderer, m_texBoss);
 			else if (building[i]->GetTeamType() == BLUETEAM) building[i]->DrawTexturedRect(m_renderer, m_texBlueBuilding);
 		}
 	}
@@ -181,6 +221,13 @@ void SceneMgr::DrawObject()
 void SceneMgr::MouseSet(int x, int y)
 {
 	float nowTime = (float)timeGetTime() / 1000.0f;
+
+	int ccc = 0;
+	for (int i = 1; i < 4;++i)
+	{
+		if (building[i]) ++ccc;//아군 건물이 살아있는지 체크
+	}
+	if (ccc == 0) return;
 
 	if (nowTime - mouseTime > 0.3)
 	{

@@ -42,13 +42,16 @@ private:
 	Sound *	m_sound;
 	int soundBG;
 
-	GLuint m_texRedBuilding;
 	GLuint m_texBlueBuilding;
 	GLuint m_texBackground;
 	GLuint m_texSprite;
 	GLuint m_texSpriteReverse;
-	GLuint m_texParticle;
+	GLuint m_texParticleRed;
+	GLuint m_texParticleBlue;
 	GLuint m_texRainParticle;
+	GLuint m_texBoss;
+	GLuint m_texBulletRed;
+	GLuint m_texBulletBlue;
 
 public:
 	SceneMgr(int width, int height);

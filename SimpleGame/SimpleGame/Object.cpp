@@ -28,14 +28,19 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 		object_level = LEVEL_SKY;
 		object_speedX = (int(cos(objectAngle)*object_speed)) % 700;
 		object_speedY = (int(sin(objectAngle)*object_speed)) % 700;
+		if (teamtype == REDTEAM)
+		{
+			life = 2000.0;
+			object_size = 300;
+		}
 		break;
 	case OBJECT_CHARACTER:
 		object_size = 30;
 		object_speed = 300;
-		life = 40.0;
+		life = 50.0;
 		object_level = LEVEL_GROUND;
 		object_speedX = (int(cos(objectAngle)*object_speed)) % 700;
-		object_speedY = (int(sin(objectAngle)*object_speed)) % 700;
+		object_speedY = (int(sin(objectAngle)*object_speed)) % 100;
 		
 
 		if (teamtype == REDTEAM)
@@ -47,7 +52,7 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 				object_speedY = -10;
 				object_speedX = 0;
 				object_size = 80;
-				life = 250.0;
+				life = 300.0;
 			}
 			else
 			{
@@ -81,28 +86,32 @@ ObjectCC::ObjectCC(float x, float y, int type,int teamtype)
 	case OBJECT_BULLET:
 		object_size = 4;
 		object_speed = 100;
-		life = 15.0;
+		life = 20.0;
 		object_level = LEVEL_UNDERGROUND;
-		object_speedX = (int(cos(objectAngle)*object_speed)) % 700;
-		object_speedY = (int(sin(objectAngle)*object_speed)) % 700;
 		if (teamtype == REDTEAM)
 		{
+			life = 30.0;
+			object_speedX = (int(cos(objectAngle)*object_speed)) % 700;
+			object_speedY = (int(sin(objectAngle)*object_speed)) % 700;
+			object_size = 8;
 			object_R = 1;  object_G = 0; object_B = 0;
 			if (object_speedY > 0) object_speedY = object_speedY*-1;
 		}
 		else if (teamtype == BLUETEAM)
 		{
+			object_speedX = (int(cos(objectAngle)*object_speed)) % 700;
+			object_speedY = (int(sin(objectAngle)*object_speed)) % 700;
 			object_R = 0;  object_G = 0; object_B = 1;
 			if (object_speedY < 0) object_speedY = object_speedY*-1;
 		}
 		break;
 	case OBJECT_ARROW:
-		object_size = 4;
+		object_size = 20;
 		object_speed = 100;
-		life = 10.0;
+		life = 20.0;
 		object_level = LEVEL_UNDERGROUND;
-		object_speedX = (int(cos(objectAngle)*object_speed)) % 700;
-		object_speedY = (int(sin(objectAngle)*object_speed)) % 700;
+		object_speedX = 0;
+		object_speedY = 200;
 		if (teamtype == REDTEAM)
 		{
 			object_R = 0.5;  object_G = 0.2; object_B = 0.7;
@@ -151,7 +160,7 @@ void ObjectCC::DrawSolidBullet(Renderer *m_renderer, GLuint Image,float saveTime
 		particleDirX = 0;
 		particleDirY = 5;
 	}*/
-	m_renderer->DrawParticle(object_x, object_y, 0, 10, 1, 1, 1, 0.9, particleDirX, particleDirY, Image, particleTime, LEVEL_UNDERGROUND);
+	m_renderer->DrawParticle(object_x, object_y, 0, 20, 1, 1, 1, 0.9, particleDirX, particleDirY, Image, particleTime, LEVEL_UNDERGROUND);
 	particleTime += saveTime / 5;
 }
 void ObjectCC::DrawSolidRect(Renderer *m_renderer)
@@ -163,9 +172,17 @@ void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
 {
 	if (object_type == OBJECT_BUILDING)
 	{
-		if (objectTeam_type == BLUETEAM) m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 0, 0, 1, 1, (float)life / 800, object_level);
-		else if (objectTeam_type == REDTEAM) m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 1, 0, 0, 1, (float)life / 800, object_level);
-		m_renderer->DrawTexturedRect(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, object_level);
+		if (objectTeam_type == BLUETEAM) 
+		{
+			m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 0, 0, 1, 1, (float)life / 800, object_level);
+			m_renderer->DrawTexturedRect(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, object_level);
+		}
+		else if (objectTeam_type == REDTEAM)
+		{
+			aniTime = (++aniTime) % 20;
+			m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2, 0, object_size, 10, 1, 0, 0, 1, (float)life / 2000, object_level);
+			m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 20, 1, object_level);
+		}
 	}
 	else if (object_type == OBJECT_CHARACTER)
 	{
@@ -174,13 +191,13 @@ void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
 			if (unitType == 2)
 			{
 				aniTime = (++aniTime) % 4;
-				m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 0, 0, 1, 1, (float)life / 40, object_level);
+				m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 0, 0, 1, 1, (float)life / 50, object_level);
 				m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 4, 1, object_level);
 			}
 			else if (unitType == 1)
 			{
 				aniTime = (++aniTime) % 4;
-				m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 0, 0, 1, 1, (float)life / 250, object_level);
+				m_renderer->DrawSolidRectGauge(object_x, object_y + object_size / 2 + 5, 0, object_size, 4, 0, 0, 1, 1, (float)life / 300, object_level);
 				m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 4, 1, object_level);
 			}
 		}
@@ -199,6 +216,10 @@ void ObjectCC::DrawTexturedRect(Renderer *m_renderer, GLuint Image)
 				m_renderer->DrawTexturedRectSeq(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, (aniTime), 0, 4, 1, object_level);
 			}
 		}
+	}
+	if (object_type == OBJECT_ARROW)
+	{
+		m_renderer->DrawTexturedRect(object_x, object_y, 0, object_size, 1, 1, 1, 1, Image, object_level);
 	}
 	
 }
